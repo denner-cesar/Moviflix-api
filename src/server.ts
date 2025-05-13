@@ -1,15 +1,18 @@
-import * as http from 'http';
-const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
-   res.setHeader('Content-Type', 'text/plain');
- 
-   if (req.url === '/') {
-       res.statusCode = 200;
-       res.end('Home page');
-   } else if (req.url === '/sobre') {
-       res.statusCode = 200;
-       res.end('About page');
-   }
+import express from 'express';
+import { PrismaClient } from './generated/prisma';
+
+
+const port = 3000;
+const app = express();
+const prisma = new PrismaClient();
+
+app.get('/movies', async (req, res) => {
+  const movies = await prisma.movie.findMany();
+  res.json(movies);
+  
 });
-server.listen(3000, () => {
- console.log(`Servidor em execução em http://localhost:3000/`);
+
+app.listen(port, () => {
+  console.log(`Server rodando na porta
+    ${port}`);
 });
